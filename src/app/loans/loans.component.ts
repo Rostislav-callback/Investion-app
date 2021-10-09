@@ -10,6 +10,7 @@ import { Loans, Loan } from './interfaces/loans';
   styleUrls: ['./loans.component.scss']
 })
 export class LoansComponent implements OnInit {
+  closeResult = '';
   private cards!: Loans;
   private subscription!: Subscription;
 
@@ -26,5 +27,4 @@ export class LoansComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
 }

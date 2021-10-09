@@ -5,7 +5,7 @@
         <h2 class="loan_title">loan title1</h2>
         <div class="loan_details">
             <p class="loan_content">loan data</p>
-            <button class="loan_button">INVEST</button>
+            <button class="loan_button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">INVEST</button>
         </div>
     </div>
 
@@ -13,7 +13,7 @@
         <h2 class="loan_title">loan title2</h2>
         <div class="loan_details">
             <p class="loan_content">loan data</p>
-            <button class="loan_button">INVEST</button>
+            <button class="loan_button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">INVEST</button>
         </div>
     </div>
 
@@ -21,7 +21,27 @@
         <h2 class="loan_title">loan title3</h2>
         <div class="loan_details">
             <p class="loan_content">loan data</p>
-            <button class="loan_button">INVEST</button>
+            <button class="loan_button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">INVEST</button>
         </div>       
     </div>  
+</div>
+  
+  
+<div class="modal fade" 
+     id="staticBackdrop" 
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false" 
+     tabindex="-1" 
+     aria-labelledby="staticBackdropLabel" 
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body">
+            <button type="button" class="btn loan_button">INVEST</button>
+        </div>
+    </div>
 </div>
