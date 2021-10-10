@@ -1,14 +1,10 @@
-export interface Loans {
-    loans: Loan[]
-}
-
 export interface Loan {
-    amount: string,
-    annualised_return: string,
-    available: string,
     id: string,
-    ltv: string,
-    term_remaining: string,
     title: string,
     tranche: string
+    available: string,
+    annualised_return: string,
+    term_remaining: string,
+    amount: string,
+    ltv: string
 }

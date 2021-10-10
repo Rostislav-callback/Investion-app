@@ -1,32 +1,44 @@
 <div class="container">
     <h1>Current Loans</h1>
 
-    <div class="loan">
-        <h2 class="loan_title">loan title1</h2>
+    <div class="loan" #loanA>
+        <h2 class="loan_title"></h2>
         <div class="loan_details">
-            <p class="loan_content">loan data</p>
-            <button class="loan_button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">INVEST</button>
+            <p class="loan_content"></p>
+            <button class="loan_button" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#staticBackdrop"
+                    (click)="investToLoanA()">INVEST
+            </button>
         </div>
     </div>
 
-    <div class="loan">
-        <h2 class="loan_title">loan title2</h2>
+    <div class="loan" #loanB>
+        <h2 class="loan_title"></h2>
         <div class="loan_details">
-            <p class="loan_content">loan data</p>
-            <button class="loan_button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">INVEST</button>
+            <p class="loan_content"></p>
+            <button class="loan_button" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#staticBackdrop"
+                    (click)="investToLoanB()">INVEST
+            </button>
         </div>
     </div>
 
-    <div class="loan">
-        <h2 class="loan_title">loan title3</h2>
+    <div class="loan" #loanC>
+        <h2 class="loan_title"></h2>
         <div class="loan_details">
-            <p class="loan_content">loan data</p>
-            <button class="loan_button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">INVEST</button>
+            <p class="loan_content"></p>
+            <button class="loan_button" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#staticBackdrop"
+                    (click)="investToLoanC()">INVEST
+            </button>
         </div>       
     </div>  
+    <div style="text-align: center;">Total amount available for investments: {{userAmountFunds}}</div>
 </div>
-  
-  
+   
 <div class="modal fade" 
      id="staticBackdrop" 
      data-bs-backdrop="static" 
@@ -37,11 +49,33 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="staticBackdropLabel">Invest in Loan</h5>
+                <button type="button" 
+                        class="btn-close" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
             </div>
-        <div class="modal-body">
-            <button type="button" class="btn loan_button">INVEST</button>
+            <div class="loan_invested-details" #modal>
+                <p class="loan_invest-title"></p>
+                <p class="loan_invest-available"></p>
+                <p class="loan_invest-remain"></p>
+            </div>       
+            <form class="modal-body" [formGroup]="investForm">
+                <input type="text" 
+                       class="modal_input" 
+                       formControlName="investion" 
+                       >
+                <button type="button" 
+                        class="loan_button" 
+                        data-bs-dismiss="modal" 
+                        disabled
+                        (click)="updateInvestData()"
+                        #investButton>INVEST
+                </button>
+            </form>
         </div>
     </div>
 </div>
+
+<ng-container *ngIf="formValue$ | async"></ng-container>

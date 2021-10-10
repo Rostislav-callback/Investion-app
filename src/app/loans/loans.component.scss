@@ -5,6 +5,7 @@
 }
 
 .loan {
+    position: relative;
     margin: 15px 0;
     height: 110px;
     border: 1px solid #000;   
@@ -13,21 +14,24 @@
 
 .loan_title {
     margin: 0;
+    font-size: medium;
 }
 
 .loan_details {
-    margin-top: 5px;
-    display:inline-flex;
+    position: absolute;
+    display: flex;
     height: 37px;
-    width: 100%;
+    width: 450px;
+    bottom: 10px;
     justify-content: space-between;
 }
 
-.loan_content {  
-    margin-top: 5px;
+.loan_content { 
+    font-size: 14px;
 }
 
 .loan_button {
+    height: 34px;
     width: 120px;
     font-size: 15px;
     background-color: rgb(255, 237, 72);
@@ -37,4 +41,20 @@
 
 .loan_button:hover {
     cursor: pointer;
+}
+
+.modal-dialog {
+    margin: 150px auto !important;
+    width: 400px !important;
+}
+
+.modal-body {
+    display: flex;
+    height: 64px !important;
+    padding: 16px !important;
+    justify-content: space-between;
+}
+
+.modal_input {
+    border: 1px solid rgb(218, 218, 218);
 }
