@@ -16,7 +16,11 @@ export class LoansDataService {
     return this.http.get(`http://localhost:3000/loans/${id}`);
   }
 
-  updateData(id:any, data: any) {
-    return this.http.put(`http://localhost:3000/loans/${id}`, data);
+  getCash() {
+    return this.http.get(`http://localhost:3000/user_fund`);
+  }
+
+  updateData(data: any) {
+    return this.http.put(`http://localhost:3000/user_fund`, data);
   }
 }

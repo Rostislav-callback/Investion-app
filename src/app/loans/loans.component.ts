@@ -20,14 +20,14 @@ export class LoansComponent implements OnInit {
   @ViewChild('loanB', {static: false}) loanB!: ElementRef;
   @ViewChild('loanC', {static: false}) loanC!: ElementRef;
 
-  public showMessage = false;
   public currentLoanID: any;
-  public currentLoan!: Loan;
   public userAmountFunds: any;
   public userAvaibleInv: any;
+  public currentLoan!: Loan;
   public investForm!: FormGroup;
 
   private subscription!: Subscription;
+  private userSubscription!: Subscription;
   private formSubscription!: Subscription | undefined;
 
   formValue$!: Observable<any>;
@@ -38,25 +38,24 @@ export class LoansComponent implements OnInit {
 
   ngOnInit(): void { 
     this.initForm();
+    this.userSubscription = this.loansService.getCash()
+      .subscribe((cash:any) => {  
+        this.userAmountFunds = cash.cash_acount;
+    })
+    this.subscription = this.loansService.getDataAll()
+      .subscribe((data: any) => {
+        const loans = [];
+        const trancheA = this.loanA.nativeElement.childNodes;
+        const trancheB = this.loanB.nativeElement.childNodes;
+        const trancheC = this.loanC.nativeElement.childNodes;
 
-    this.subscription = this.loansService.getDataAll().pipe(
-      tap((data:any) => data.forEach((loan: Loan) => {
-        console.log(loan.amount);
-        this.userAmountFunds = parseFloat(loan.amount);
-      }))
-    ).subscribe((data: any) => {
-      console.log(data)
-      const loans = [];
-      const trancheA = this.loanA.nativeElement.childNodes;
-      const trancheB = this.loanB.nativeElement.childNodes;
-      const trancheC = this.loanC.nativeElement.childNodes;
+        loans.push(trancheA, trancheB, trancheC);
 
-      loans.push(trancheA, trancheB, trancheC);
-
-      for (let i = 0; i < data.length; i++) {
-        this.loanService.renderLoansContent(loans[i], data[i]);
+        for (let i = 0; i < data.length; i++) {
+          this.loanService.renderLoansContent(loans[i], data[i]);
+        }
       }
-    });    
+    );    
    
     this.formSubscription = this.formСompare();
   }
@@ -65,7 +64,8 @@ export class LoansComponent implements OnInit {
     this.formValue$ = this.loansService.getData(1).pipe(
       map((loan: any) => {
         const modalRef = this.modal.nativeElement.childNodes;   
-        this.currentLoanID = loan.id   
+
+        this.currentLoanID = loan.id;
         this.currentLoan = loan;
         this.userAvaibleInv = parseFloat(loan.available);
         this.loanService.renderModalContent(loan, modalRef);
@@ -77,7 +77,8 @@ export class LoansComponent implements OnInit {
     this.formValue$ = this.loansService.getData(5).pipe(
       map((loan: any) => {
         const modalRef = this.modal.nativeElement.childNodes;
-        this.currentLoanID = loan.id
+
+        this.currentLoanID = loan.id;
         this.currentLoan = loan;
         this.userAvaibleInv = parseFloat(loan.available);
         this.loanService.renderModalContent(loan, modalRef);       
@@ -89,7 +90,8 @@ export class LoansComponent implements OnInit {
     this.formValue$ = this.loansService.getData(12).pipe(
       map((loan: any) => {
         const modalRef = this.modal.nativeElement.childNodes;
-        this.currentLoanID = loan.id
+
+        this.currentLoanID = loan.id;
         this.currentLoan = loan;
         this.userAvaibleInv = parseFloat(loan.available);
         this.loanService.renderModalContent(loan, modalRef);
@@ -99,12 +101,11 @@ export class LoansComponent implements OnInit {
 
   updateInvestData() {  
     const userInvestment = this.investForm.get('investion')?.value
-    const remainingFinances = this.userAmountFunds - userInvestment;
-    this.userAmountFunds = remainingFinances;
-    this.currentLoan.amount = String(remainingFinances);
+    const remainingFinances = Number(this.userAmountFunds) - userInvestment;
+    this.investForm.get('investion')?.setValue('');
     
-    this.loansService.updateData(this.currentLoanID, this.currentLoan)
-     .subscribe((data:any) => {console.log(data)});
+    this.loansService.updateData({cash_acount: String(remainingFinances)})
+     .subscribe((data:any) => {data});
   }
 
   formСompare() {
@@ -131,6 +132,7 @@ export class LoansComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.userSubscription.unsubscribe();
     this.formSubscription!.unsubscribe();
   }
 }
