@@ -8,7 +8,15 @@ export class LoansDataService {
 
   constructor(private http: HttpClient) {}
 
-  getData(){
+  getDataAll(){
     return this.http.get('http://localhost:3000/loans');
+  }
+
+  getData(id:any) {
+    return this.http.get(`http://localhost:3000/loans/${id}`);
+  }
+
+  updateData(id:any, data: any) {
+    return this.http.put(`http://localhost:3000/loans/${id}`, data);
   }
 }

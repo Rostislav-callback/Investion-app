@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { FormGroup, Validators, ValidationErrors, FormBuilder} from '@angular/forms';
+import { FormGroup, Validators, FormBuilder} from '@angular/forms';
 
 import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -20,6 +20,9 @@ export class LoansComponent implements OnInit {
   @ViewChild('loanB', {static: false}) loanB!: ElementRef;
   @ViewChild('loanC', {static: false}) loanC!: ElementRef;
 
+  public showMessage = false;
+  public currentLoanID: any;
+  public currentLoan!: Loan;
   public userAmountFunds: any;
   public userAvaibleInv: any;
   public investForm!: FormGroup;
@@ -36,11 +39,13 @@ export class LoansComponent implements OnInit {
   ngOnInit(): void { 
     this.initForm();
 
-    this.subscription = this.loansService.getData().pipe(
+    this.subscription = this.loansService.getDataAll().pipe(
       tap((data:any) => data.forEach((loan: Loan) => {
+        console.log(loan.amount);
         this.userAmountFunds = parseFloat(loan.amount);
       }))
     ).subscribe((data: any) => {
+      console.log(data)
       const loans = [];
       const trancheA = this.loanA.nativeElement.childNodes;
       const trancheB = this.loanB.nativeElement.childNodes;
@@ -57,51 +62,62 @@ export class LoansComponent implements OnInit {
   }
 
   investToLoanA() {
-    this.formValue$ = this.loansService.getData().pipe(
-      map((loans: any) => {
-        const modalRef = this.modal.nativeElement.childNodes;      
-        this.userAvaibleInv = parseFloat(loans[0].available);
-        this.loanService.renderModalContent(loans[0], modalRef);
+    this.formValue$ = this.loansService.getData(1).pipe(
+      map((loan: any) => {
+        const modalRef = this.modal.nativeElement.childNodes;   
+        this.currentLoanID = loan.id   
+        this.currentLoan = loan;
+        this.userAvaibleInv = parseFloat(loan.available);
+        this.loanService.renderModalContent(loan, modalRef);
       })
     )
   }
 
-  investToLoanB() {
-    
-    this.formValue$ = this.loansService.getData().pipe(
-      map((loans: any) => {
+  investToLoanB() {  
+    this.formValue$ = this.loansService.getData(5).pipe(
+      map((loan: any) => {
         const modalRef = this.modal.nativeElement.childNodes;
-        this.userAvaibleInv = parseFloat(loans[1].available);
-        this.loanService.renderModalContent(loans[1], modalRef);       
+        this.currentLoanID = loan.id
+        this.currentLoan = loan;
+        this.userAvaibleInv = parseFloat(loan.available);
+        this.loanService.renderModalContent(loan, modalRef);       
       })
     )
   }
 
   investToLoanC() {
-    this.formValue$ = this.loansService.getData().pipe(
-      map((loans: any) => {
+    this.formValue$ = this.loansService.getData(12).pipe(
+      map((loan: any) => {
         const modalRef = this.modal.nativeElement.childNodes;
-        this.userAvaibleInv = parseFloat(loans[2].available);
-        this.loanService.renderModalContent(loans[2], modalRef);
+        this.currentLoanID = loan.id
+        this.currentLoan = loan;
+        this.userAvaibleInv = parseFloat(loan.available);
+        this.loanService.renderModalContent(loan, modalRef);
       })
     )
+  }
+
+  updateInvestData() {  
+    const userInvestment = this.investForm.get('investion')?.value
+    const remainingFinances = this.userAmountFunds - userInvestment;
+    this.userAmountFunds = remainingFinances;
+    this.currentLoan.amount = String(remainingFinances);
+    
+    this.loansService.updateData(this.currentLoanID, this.currentLoan)
+     .subscribe((data:any) => {console.log(data)});
   }
 
   formСompare() {
     return this.investForm.get('investion')?.valueChanges.subscribe((data:any) => {
       if (Number(data) <= Number(this.userAmountFunds) && 
-          Number(data) >= Number(this.userAvaibleInv) && 
+          Number(data) >= Number(this.userAvaibleInv) &&
+          Number(this.userAmountFunds) > 0 && 
           this.investForm.valid) {
-        console.log(this.userAvaibleInv)
         this.investButton.nativeElement.removeAttribute('disabled');    
       } else {
         this.investButton.nativeElement.setAttribute('disabled', '');
       }
     });
-  }
-
-  updateInvestData() {  
-    
   }
 
   private initForm() {
